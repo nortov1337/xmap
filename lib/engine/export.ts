@@ -37,7 +37,7 @@ async function renderPng(map: MlMap, title: string): Promise<Blob | null> {
   ctx.fillStyle = "#111827";
   ctx.textBaseline = "middle";
   ctx.font = `600 ${20 * scale}px ui-sans-serif, system-ui, sans-serif`;
-  ctx.fillText(title || "Карта", 24 * scale, bar * 0.5);
+  ctx.fillText(title || "Map", 24 * scale, bar * 0.5);
 
   return new Promise((resolve) => out.toBlob((blob) => resolve(blob), "image/png"));
 }

@@ -45,27 +45,27 @@ export const BASEMAPS: Record<
 > = {
   positron: {
     style: "https://tiles.openfreemap.org/styles/positron",
-    label: "Светлая",
-    description: "Нейтральная подложка с мягкими цветами",
+    label: "Light",
+    description: "Neutral basemap with soft colors",
   },
   liberty: {
     style: "https://tiles.openfreemap.org/styles/liberty",
-    label: "Цветная",
-    description: "Подробная подложка с рельефом и POI",
+    label: "Vivid",
+    description: "Detailed basemap with terrain and POI",
   },
   dark: {
     style: "https://tiles.openfreemap.org/styles/dark",
-    label: "Тёмная",
-    description: "Тёмная подложка для ночной работы",
+    label: "Dark",
+    description: "Dark basemap for night work",
   },
   satellite: {
     style: SATELLITE_STYLE,
-    label: "Спутник",
-    description: "Космические снимки без подписей",
+    label: "Satellite",
+    description: "Satellite imagery without labels",
   },
   hybrid: {
     style: HYBRID_STYLE,
-    label: "Гибрид",
-    description: "Снимки с подписями и границами",
+    label: "Hybrid",
+    description: "Imagery with labels and borders",
   },
 };

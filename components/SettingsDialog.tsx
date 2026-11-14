@@ -23,12 +23,12 @@ export function SettingsDialog({ onClose }: Props) {
         className="panel settings-dialog"
         role="dialog"
         aria-modal="true"
-        aria-label="Настройки"
+        aria-label="Settings"
         onMouseDown={(event) => event.stopPropagation()}
       >
         <div className="settings-head">
-          <h2>Настройки</h2>
-          <button className="icon-btn" onClick={onClose} aria-label="Закрыть">
+          <h2>Settings</h2>
+          <button className="icon-btn" onClick={onClose} aria-label="Close">
             <Glyph name="close" size={16} />
           </button>
         </div>

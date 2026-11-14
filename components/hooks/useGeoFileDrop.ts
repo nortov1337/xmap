@@ -32,14 +32,14 @@ export function useGeoFileDrop({ engineRef, notify }: DropDeps): boolean {
           const parsed = JSON.parse(await file.text());
           imported.push(...featuresFromGeoJson(parsed, layerId));
         } catch {
-          notify(`${file.name}: не удалось прочитать`);
+          notify(`${file.name}: could not be read`);
         }
       }
 
       if (!imported.length) return;
       addFeatures(imported);
       engine.fitTo(imported);
-      notify(`Добавлено объектов: ${imported.length}`);
+      notify(`Added features: ${imported.length}`);
     };
 
     const onDragEnter = (event: DragEvent) => {

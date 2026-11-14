@@ -38,8 +38,8 @@ export function FeatureForm({ feature, layers, open, onUpdate, onDelete, onDupli
   return (
     <div className={`panel inspector ${open ? "open" : ""}`}>
       <div className="panel-head">
-        <h3>Объект</h3>
-        <button className="icon-btn" onClick={onClose} title="Снять выделение">
+        <h3>Feature</h3>
+        <button className="icon-btn" onClick={onClose} title="Deselect">
           <Glyph name="close" size={15} />
         </button>
       </div>
@@ -48,7 +48,7 @@ export function FeatureForm({ feature, layers, open, onUpdate, onDelete, onDupli
 
       {feature.kind === "text" && (
         <>
-          <Field label="Текст">
+          <Field label="Text">
             <textarea
               rows={2}
               value={feature.label}
@@ -56,14 +56,14 @@ export function FeatureForm({ feature, layers, open, onUpdate, onDelete, onDupli
             />
           </Field>
           <RangeField
-            label={`Размер · ${style.size}px`}
+            label={`Size · ${style.size}px`}
             min={10}
             max={48}
             value={style.size}
             onChange={(size) => patchStyle({ size })}
           />
           <RangeField
-            label={`Поворот · ${style.rotation}°`}
+            label={`Rotation · ${style.rotation}°`}
             min={-180}
             max={180}
             value={style.rotation}
@@ -72,31 +72,31 @@ export function FeatureForm({ feature, layers, open, onUpdate, onDelete, onDupli
         </>
       )}
 
-      <Field label="Название">
+      <Field label="Name">
         <input
           type="text"
           value={feature.title}
-          placeholder="Без названия"
+          placeholder="Untitled"
           onChange={(event) => onUpdate(feature.id, { title: event.target.value })}
         />
       </Field>
 
-      <Field label="Описание">
+      <Field label="Description">
         <textarea
           rows={2}
           value={feature.description}
-          placeholder="Добавить описание"
+          placeholder="Add description"
           onChange={(event) => onUpdate(feature.id, { description: event.target.value })}
         />
       </Field>
 
-      <Field label="Цвет">
+      <Field label="Color">
         <ColorSwatches value={style.color} onChange={(color) => patchStyle({ color })} />
       </Field>
 
       {FILLED.includes(feature.kind) && (
         <RangeField
-          label={`Заливка · ${Math.round(style.fillOpacity * 100)}%`}
+          label={`Fill · ${Math.round(style.fillOpacity * 100)}%`}
           value={Math.round(style.fillOpacity * 100)}
           onChange={(value) => patchStyle({ fillOpacity: value / 100 })}
         />
@@ -104,7 +104,7 @@ export function FeatureForm({ feature, layers, open, onUpdate, onDelete, onDupli
 
       {STROKED.includes(feature.kind) && (
         <RangeField
-          label={`Обводка · ${style.strokeWidth}px`}
+          label={`Stroke · ${style.strokeWidth}px`}
           max={10}
           step={0.5}
           value={style.strokeWidth}
@@ -112,7 +112,7 @@ export function FeatureForm({ feature, layers, open, onUpdate, onDelete, onDupli
         />
       )}
 
-      <Field label="Слой">
+      <Field label="Layer">
         <select
           value={feature.layerId}
           onChange={(event) => onUpdate(feature.id, { layerId: event.target.value })}
@@ -128,27 +128,27 @@ export function FeatureForm({ feature, layers, open, onUpdate, onDelete, onDupli
       <div className="meta">
         {meta.area !== undefined && (
           <span>
-            Площадь <b>{formatArea(meta.area)}</b>
+            Area <b>{formatArea(meta.area)}</b>
           </span>
         )}
         {meta.length !== undefined && (
           <span>
-            Длина <b>{formatLength(meta.length)}</b>
+            Length <b>{formatLength(meta.length)}</b>
           </span>
         )}
         {meta.vertices !== undefined && (
           <span>
-            Вершин <b>{meta.vertices}</b>
+            Vertices <b>{meta.vertices}</b>
           </span>
         )}
       </div>
 
       <div className="row-2">
         <button className="btn" onClick={onDuplicate}>
-          Дублировать
+          Duplicate
         </button>
         <button className="btn danger" onClick={onDelete}>
-          Удалить
+          Delete
         </button>
       </div>
     </div>

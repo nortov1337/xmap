@@ -35,7 +35,7 @@ export function LayerRow({
       } ${dropTarget ? "drop-target" : ""}`}
       onClick={onSelect}
       onDoubleClick={() => {
-        const name = window.prompt("Название слоя", layer.name);
+        const name = window.prompt("Layer name", layer.name);
         if (name) onUpdate({ name });
       }}
       onContextMenu={(event) => {
@@ -43,7 +43,7 @@ export function LayerRow({
         onContextMenu(event.clientX, event.clientY);
       }}
       {...dragBind}
-      title="Клик — свойства слоя, двойной клик — переименовать, перетащить — изменить порядок"
+      title="Click — layer properties, double-click — rename, drag — reorder"
     >
       <button
         className="icon-btn"
@@ -51,7 +51,7 @@ export function LayerRow({
           event.stopPropagation();
           onUpdate({ visible: !layer.visible });
         }}
-        title={layer.visible ? "Скрыть слой" : "Показать слой"}
+        title={layer.visible ? "Hide layer" : "Show layer"}
       >
         <Glyph name={layer.visible ? "eye" : "eyeOff"} size={15} />
       </button>
@@ -63,7 +63,7 @@ export function LayerRow({
           event.stopPropagation();
           onUpdate({ locked: !layer.locked });
         }}
-        title={layer.locked ? "Разблокировать" : "Заблокировать"}
+        title={layer.locked ? "Unlock" : "Lock"}
       >
         <Glyph name={layer.locked ? "lock" : "unlock"} size={14} />
       </button>

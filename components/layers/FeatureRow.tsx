@@ -36,7 +36,7 @@ export function FeatureRow({
         onContextMenu(event.clientX, event.clientY);
       }}
       {...dragBind}
-      title="Перетащить — изменить порядок или слой"
+      title="Drag to reorder or move to another layer"
     >
       <span className="feature-icon">
         <Glyph name={featureIcon(feature.kind)} size={14} />

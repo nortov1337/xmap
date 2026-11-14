@@ -100,7 +100,7 @@ export function Toolbar(props: Props) {
       onPointerUp={endDrag}
       onPointerCancel={endDrag}
     >
-      <span className="toolbar-grip" title="Перетащить панель">
+      <span className="toolbar-grip" title="Drag panel">
         <Glyph name="grip" size={14} />
       </span>
 
@@ -118,39 +118,39 @@ export function Toolbar(props: Props) {
       ))}
 
       <span className="sep" />
-      <button className="tb" onClick={onUndo} disabled={!canUndo} aria-label="Отменить">
+      <button className="tb" onClick={onUndo} disabled={!canUndo} aria-label="Undo">
         <Glyph name="undo" />
-        <span className="tip">Отменить · Ctrl+Z</span>
+        <span className="tip">Undo · Ctrl+Z</span>
       </button>
-      <button className="tb" onClick={onRedo} disabled={!canRedo} aria-label="Повторить">
+      <button className="tb" onClick={onRedo} disabled={!canRedo} aria-label="Redo">
         <Glyph name="redo" />
-        <span className="tip">Повторить · Ctrl+Y</span>
+        <span className="tip">Redo · Ctrl+Y</span>
       </button>
 
       <span className="sep" />
-      <button className="tb" onClick={onDuplicate} disabled={!hasSelection} aria-label="Дублировать">
+      <button className="tb" onClick={onDuplicate} disabled={!hasSelection} aria-label="Duplicate">
         <Glyph name="copy" />
-        <span className="tip">Дублировать · Ctrl+D</span>
+        <span className="tip">Duplicate · Ctrl+D</span>
       </button>
-      <button className="tb" onClick={onDelete} disabled={!hasSelection} aria-label="Удалить">
+      <button className="tb" onClick={onDelete} disabled={!hasSelection} aria-label="Delete">
         <Glyph name="trash" />
-        <span className="tip">Удалить · Del</span>
+        <span className="tip">Delete · Del</span>
       </button>
 
       <span className="sep" />
-      <button className="tb" onClick={onExportPng} aria-label="Экспорт PNG">
+      <button className="tb" onClick={onExportPng} aria-label="Export PNG">
         <Glyph name="image" />
-        <span className="tip">Экспорт PNG</span>
+        <span className="tip">Export PNG</span>
       </button>
-      <button className="tb" onClick={onExportGeoJson} aria-label="Экспорт GeoJSON">
+      <button className="tb" onClick={onExportGeoJson} aria-label="Export GeoJSON">
         <Glyph name="download" />
-        <span className="tip">Экспорт GeoJSON</span>
+        <span className="tip">Export GeoJSON</span>
       </button>
 
       <span className="sep" />
-      <button className="tb" onClick={onSettings} aria-label="Настройки">
+      <button className="tb" onClick={onSettings} aria-label="Settings">
         <Glyph name="settings" />
-        <span className="tip">Настройки</span>
+        <span className="tip">Settings</span>
       </button>
     </div>
   );

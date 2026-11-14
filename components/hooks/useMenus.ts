@@ -41,7 +41,7 @@ export function useMenus(engineRef: RefObject<MapEngine | null>, notify: (messag
   const copyText = useCallback(
     (text: string) => {
       navigator.clipboard.writeText(text).then(
-        () => notify("Скопировано"),
+        () => notify("Copied"),
         () => notify(text),
       );
     },
@@ -54,45 +54,45 @@ export function useMenus(engineRef: RefObject<MapEngine | null>, notify: (messag
     if (!engine) return [];
 
     const copyCoords: ContextMenuItem = {
-      label: "Скопировать координаты",
+      label: "Copy coordinates",
       onSelect: () => copyText(formatCoords(menu.lng, menu.lat)),
     };
 
     if (menu.featureId) {
       return [
-        { label: "Дублировать", onSelect: () => engine.duplicateSelection() },
+        { label: "Duplicate", onSelect: () => engine.duplicateSelection() },
         {
-          label: "Копировать",
+          label: "Copy",
           onSelect: () => {
-            if (engine.copySelected()) notify("Объект скопирован");
+            if (engine.copySelected()) notify("Feature copied");
           },
         },
         { ...copyCoords, separator: true },
         {
-          label: "Удалить",
+          label: "Delete",
           danger: true,
           separator: true,
           onSelect: () => engine.deleteSelection(),
         },
-        { label: "Снять выделение", separator: true, onSelect: () => setSelection([]) },
+        { label: "Deselect", separator: true, onSelect: () => setSelection([]) },
       ];
     }
 
     return [
       copyCoords,
       {
-        label: "Вставить здесь",
+        label: "Paste here",
         separator: true,
         disabled: !engine.hasClipboard(),
         onSelect: () => engine.pasteAt(menu.lng, menu.lat),
       },
       {
-        label: "Метка здесь",
+        label: "Marker here",
         separator: true,
         onSelect: () => engine.addAt("marker", menu.lng, menu.lat),
       },
-      { label: "Текст здесь", onSelect: () => engine.addAt("text", menu.lng, menu.lat) },
-      { label: "Показать всё", separator: true, onSelect: () => engine.fitAll() },
+      { label: "Text here", onSelect: () => engine.addAt("text", menu.lng, menu.lat) },
+      { label: "Show all", separator: true, onSelect: () => engine.fitAll() },
     ];
   }, [menu, engineRef, copyText, notify, setSelection]);
 
@@ -104,23 +104,23 @@ export function useMenus(engineRef: RefObject<MapEngine | null>, notify: (messag
       if (!layer) return [];
       return [
         {
-          label: "Переименовать",
+          label: "Rename",
           onSelect: () => {
-            const name = window.prompt("Название слоя", layer.name);
+            const name = window.prompt("Layer name", layer.name);
             if (name) updateLayer(layer.id, { name });
           },
         },
         {
-          label: layer.visible ? "Скрыть" : "Показать",
+          label: layer.visible ? "Hide" : "Show",
           separator: true,
           onSelect: () => updateLayer(layer.id, { visible: !layer.visible }),
         },
         {
-          label: layer.locked ? "Разблокировать" : "Заблокировать",
+          label: layer.locked ? "Unlock" : "Lock",
           onSelect: () => updateLayer(layer.id, { locked: !layer.locked }),
         },
         {
-          label: "Удалить слой",
+          label: "Delete layer",
           danger: true,
           separator: true,
           disabled: doc.layers.length <= 1,
@@ -132,15 +132,15 @@ export function useMenus(engineRef: RefObject<MapEngine | null>, notify: (messag
     const feature = doc.features.find((item) => item.id === panelMenu.id);
     if (!feature) return [];
     return [
-      { label: "Дублировать", onSelect: () => duplicateFeature(feature.id) },
+      { label: "Duplicate", onSelect: () => duplicateFeature(feature.id) },
       {
-        label: "Копировать",
+        label: "Copy",
         onSelect: () => {
-          if (engineRef.current?.copyFeature(feature.id)) notify("Объект скопирован");
+          if (engineRef.current?.copyFeature(feature.id)) notify("Feature copied");
         },
       },
       {
-        label: "Скопировать координаты",
+        label: "Copy coordinates",
         separator: true,
         onSelect: () => {
           const center = geometryCenter(feature.geom);
@@ -148,7 +148,7 @@ export function useMenus(engineRef: RefObject<MapEngine | null>, notify: (messag
         },
       },
       {
-        label: "Удалить",
+        label: "Delete",
         danger: true,
         separator: true,
         onSelect: () => {

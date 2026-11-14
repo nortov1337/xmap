@@ -12,18 +12,18 @@ function OverlaySection() {
 
   return (
     <div className="settings-section">
-      <h3>Надписи и знаки</h3>
-      <p className="settings-hint">Слои поверх подложки: названия, иконки и указатели.</p>
+      <h3>Labels & signs</h3>
+      <p className="settings-hint">Overlays above the basemap: names, icons and signs.</p>
       <div className="settings-toggles">
         <ToggleRow
-          label="Подписи"
-          description="Названия городов, улиц, водоёмов и границ"
+          label="Labels"
+          description="City, street, water and border names"
           checked={overlays.labels}
           onChange={(labels) => setOverlays({ labels })}
         />
         <ToggleRow
-          label="Знаки"
-          description="Иконки POI и дорожные указатели в подробной теме карты"
+          label="Signs"
+          description="POI icons and road signs in the detailed map theme"
           checked={overlays.signs}
           onChange={(signs) => setOverlays({ signs })}
         />
@@ -41,8 +41,8 @@ export function AppearanceSection() {
   return (
     <>
       <div className="settings-section">
-        <h3>Тема оформления</h3>
-        <p className="settings-hint">Применяется к панелям, меню и подсказкам редактора.</p>
+        <h3>Editor theme</h3>
+        <p className="settings-hint">Applies to panels, menus and tooltips.</p>
         <div className="settings-grid">
           {(Object.keys(THEMES) as ThemeKey[]).map((key) => (
             <ChoiceCard
@@ -58,8 +58,8 @@ export function AppearanceSection() {
       </div>
 
       <div className="settings-section">
-        <h3>Тема карты</h3>
-        <p className="settings-hint">Подложка, на которой отображаются объекты.</p>
+        <h3>Map theme</h3>
+        <p className="settings-hint">The basemap the features are drawn on.</p>
         <div className="settings-grid">
           {(Object.keys(BASEMAPS) as BasemapKey[]).map((key) => (
             <ChoiceCard

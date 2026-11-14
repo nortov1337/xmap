@@ -57,10 +57,10 @@ export function LayersPanel(props: Props) {
           <b>XMap</b>
         </div>
         <div className="head-actions">
-          <button className="icon-btn" onClick={onAddLayer} title="Новый слой">
+          <button className="icon-btn" onClick={onAddLayer} title="New layer">
             <Glyph name="plus" size={16} />
           </button>
-          <button className="icon-btn mobile-only" onClick={onClose} title="Закрыть">
+          <button className="icon-btn mobile-only" onClick={onClose} title="Close">
             <Glyph name="close" size={16} />
           </button>
         </div>
@@ -70,13 +70,13 @@ export function LayersPanel(props: Props) {
         className="title-input"
         value={title}
         onChange={(event) => onTitle(event.target.value)}
-        placeholder="Название карты"
+        placeholder="Map title"
         spellCheck={false}
       />
 
       <div className="section">
         <div className="section-head">
-          <span>Слои</span>
+          <span>Layers</span>
           <span>{layers.length}</span>
         </div>
         {layers.map((layer) => (
@@ -97,11 +97,11 @@ export function LayersPanel(props: Props) {
 
       <div className="section objects">
         <div className="section-head">
-          <span>Объекты</span>
+          <span>Features</span>
           <span>{activeFeatures.length}</span>
         </div>
         {activeFeatures.length === 0 && (
-          <div className="empty">Пусто. Нарисуй что-нибудь на карте.</div>
+          <div className="empty">Empty. Draw something on the map.</div>
         )}
         {activeFeatures.map((feature) => (
           <FeatureRow

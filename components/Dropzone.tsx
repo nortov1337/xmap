@@ -7,7 +7,7 @@ export function Dropzone() {
     <div className="dropzone">
       <div className="dropzone-card">
         <Glyph name="download" size={22} />
-        <b>Отпусти, чтобы добавить на карту</b>
+        <b>Drop to add to the map</b>
         <span>GeoJSON · .geojson, .json</span>
       </div>
     </div>

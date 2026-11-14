@@ -26,13 +26,13 @@ export function LayerForm({
   return (
     <div className={`panel inspector ${open ? "open" : ""}`}>
       <div className="panel-head">
-        <h3>Слой</h3>
-        <button className="icon-btn" onClick={onClose} title="Закрыть">
+        <h3>Layer</h3>
+        <button className="icon-btn" onClick={onClose} title="Close">
           <Glyph name="close" size={15} />
         </button>
       </div>
 
-      <Field label="Название">
+      <Field label="Name">
         <input
           type="text"
           value={layer.name}
@@ -41,7 +41,7 @@ export function LayerForm({
       </Field>
 
       <RangeField
-        label={`Прозрачность · ${Math.round(layer.opacity * 100)}%`}
+        label={`Opacity · ${Math.round(layer.opacity * 100)}%`}
         min={10}
         value={Math.round(layer.opacity * 100)}
         onChange={(value) => onUpdate(layer.id, { opacity: value / 100 })}
@@ -53,20 +53,20 @@ export function LayerForm({
           onClick={() => onUpdate(layer.id, { visible: !layer.visible })}
         >
           <Glyph name={layer.visible ? "eye" : "eyeOff"} size={13} />
-          {layer.visible ? "Виден" : "Скрыт"}
+          {layer.visible ? "Visible" : "Hidden"}
         </button>
         <button
           className={`chip ${layer.locked ? "on" : ""}`}
           onClick={() => onUpdate(layer.id, { locked: !layer.locked })}
         >
           <Glyph name={layer.locked ? "lock" : "unlock"} size={13} />
-          {layer.locked ? "Закрыт" : "Открыт"}
+          {layer.locked ? "Locked" : "Unlocked"}
         </button>
       </div>
 
       <div className="meta">
         <span>
-          Объектов <b>{featureCount}</b>
+          Features <b>{featureCount}</b>
         </span>
       </div>
 
@@ -76,7 +76,7 @@ export function LayerForm({
         disabled={layerCount <= 1}
         onClick={() => onRemove(layer.id)}
       >
-        Удалить слой
+        Delete layer
       </button>
     </div>
   );

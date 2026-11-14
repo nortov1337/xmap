@@ -8,9 +8,9 @@ export type AppSettings = {
 };
 
 export const THEMES: Record<ThemeKey, { label: string; description: string }> = {
-  light: { label: "Светлая", description: "Всегда светлое оформление" },
-  dark: { label: "Тёмная", description: "Всегда тёмное оформление" },
-  system: { label: "Системная", description: "Как в операционной системе" },
+  light: { label: "Light", description: "Always light appearance" },
+  dark: { label: "Dark", description: "Always dark appearance" },
+  system: { label: "System", description: "Follows the operating system" },
 };
 
 const KEY = "xmap.settings.v1";

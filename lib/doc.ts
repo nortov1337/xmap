@@ -6,7 +6,7 @@ const KEY = "xmap.doc.v3";
 export function newLayer(index: number): Layer {
   return {
     id: crypto.randomUUID(),
-    name: `Слой ${index}`,
+    name: `Layer ${index}`,
     visible: true,
     locked: false,
     opacity: 1,

@@ -9,13 +9,13 @@ export type ToolEntry = {
 };
 
 export const TOOLS: ToolEntry[] = [
-  { tool: "select", icon: "cursor", label: "Выбрать", key: "V" },
-  { tool: "marker", icon: "pin", label: "Метка", key: "M" },
-  { tool: "text", icon: "text", label: "Текст", key: "T" },
-  { tool: "line", icon: "line", label: "Линия", key: "L" },
-  { tool: "polygon", icon: "polygon", label: "Область", key: "P" },
-  { tool: "rectangle", icon: "square", label: "Прямоугольник", key: "R" },
-  { tool: "circle", icon: "circle", label: "Круг", key: "O" },
+  { tool: "select", icon: "cursor", label: "Select", key: "V" },
+  { tool: "marker", icon: "pin", label: "Marker", key: "M" },
+  { tool: "text", icon: "text", label: "Text", key: "T" },
+  { tool: "line", icon: "line", label: "Line", key: "L" },
+  { tool: "polygon", icon: "polygon", label: "Area", key: "P" },
+  { tool: "rectangle", icon: "square", label: "Rectangle", key: "R" },
+  { tool: "circle", icon: "circle", label: "Circle", key: "O" },
 ];
 
 export const TOOL_KEYS: Record<string, Tool> = Object.fromEntries(

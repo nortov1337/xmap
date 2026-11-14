@@ -51,7 +51,7 @@ export function createFeature(kind: FeatureKind, geom: Geometry, layerId: string
     geom,
     title: "",
     description: "",
-    label: kind === "text" ? "Текст" : "",
+    label: kind === "text" ? "Text" : "",
     style: defaultStyle(kind),
   };
 }

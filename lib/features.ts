@@ -44,18 +44,18 @@ export function featureIcon(kind: FeatureKind): GlyphName {
 export function kindLabel(kind: FeatureKind): string {
   switch (kind) {
     case "marker":
-      return "Метка";
+      return "Marker";
     case "text":
-      return "Текст";
+      return "Text";
     case "line":
-      return "Линия";
+      return "Line";
     case "arrow":
-      return "Стрелка";
+      return "Arrow";
     case "circle":
-      return "Круг";
+      return "Circle";
     case "rectangle":
-      return "Прямоугольник";
+      return "Rectangle";
     default:
-      return "Область";
+      return "Area";
   }
 }
