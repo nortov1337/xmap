@@ -16,10 +16,16 @@ export type Tool =
   | "polygon"
   | "rectangle"
   | "circle"
-  | "line"
-  | "arrow";
+  | "line";
 
-export type BasemapKey = "positron" | "liberty" | "dark";
+export type BasemapKey = "positron" | "liberty" | "dark" | "satellite" | "hybrid";
+
+export type ThemeKey = "light" | "dark" | "system";
+
+export type MapOverlays = {
+  labels: boolean;
+  signs: boolean;
+};
 
 export type Layer = {
   id: string;

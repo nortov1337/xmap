@@ -1,22 +1,5 @@
-import type {
-  BasemapKey,
-  FeatureKind,
-  FeatureStyle,
-  Layer,
-  Tool,
-} from "./types";
-
-export const BASEMAPS: Record<BasemapKey, { url: string; label: string }> = {
-  positron: {
-    url: "https://tiles.openfreemap.org/styles/positron",
-    label: "Светлая",
-  },
-  liberty: {
-    url: "https://tiles.openfreemap.org/styles/liberty",
-    label: "Цветная",
-  },
-  dark: { url: "https://tiles.openfreemap.org/styles/dark", label: "Тёмная" },
-};
+import type { GlyphName } from "./icons";
+import type { FeatureKind, FeatureStyle } from "./types";
 
 export const PALETTE = [
   "#e2603f",
@@ -29,17 +12,6 @@ export const PALETTE = [
   "#5b6472",
 ];
 
-export const TOOL_KEYS: Record<string, Tool> = {
-  KeyV: "select",
-  KeyM: "marker",
-  KeyT: "text",
-  KeyL: "line",
-  KeyA: "arrow",
-  KeyP: "polygon",
-  KeyR: "rectangle",
-  KeyO: "circle",
-};
-
 export function defaultStyle(kind: FeatureKind): FeatureStyle {
   return {
     color: kind === "text" ? "#1f2937" : PALETTE[0],
@@ -50,17 +22,7 @@ export function defaultStyle(kind: FeatureKind): FeatureStyle {
   };
 }
 
-export function newLayer(index: number): Layer {
-  return {
-    id: crypto.randomUUID(),
-    name: `Слой ${index}`,
-    visible: true,
-    locked: false,
-    opacity: 1,
-  };
-}
-
-export function featureIcon(kind: FeatureKind): string {
+export function featureIcon(kind: FeatureKind): GlyphName {
   switch (kind) {
     case "marker":
       return "pin";

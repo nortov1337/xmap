@@ -1,19 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState, type PointerEvent } from "react";
+import { readStored, writeStored } from "@/lib/storage";
+import { TOOLS } from "@/lib/tools";
 import type { Tool } from "@/lib/types";
 import { Glyph } from "./Glyph";
-
-const TOOLS: Array<{ tool: Tool; icon: string; label: string; key?: string }> = [
-  { tool: "select", icon: "cursor", label: "Выбрать", key: "V" },
-  { tool: "marker", icon: "pin", label: "Метка", key: "M" },
-  { tool: "text", icon: "text", label: "Текст", key: "T" },
-  { tool: "line", icon: "line", label: "Линия", key: "L" },
-  { tool: "arrow", icon: "arrow", label: "Стрелка", key: "A" },
-  { tool: "polygon", icon: "polygon", label: "Область", key: "P" },
-  { tool: "rectangle", icon: "square", label: "Прямоугольник", key: "R" },
-  { tool: "circle", icon: "circle", label: "Круг", key: "O" },
-];
 
 const POSITION_KEY = "xmap.toolbar-position";
 
@@ -29,19 +20,14 @@ type Props = {
   onDuplicate: () => void;
   onExportPng: () => void;
   onExportGeoJson: () => void;
+  onSettings: () => void;
 };
 
 type Position = { x: number; y: number };
 
 function readPosition(): Position | null {
-  try {
-    const raw = localStorage.getItem(POSITION_KEY);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw) as Position;
-    if (typeof parsed?.x === "number" && typeof parsed?.y === "number") return parsed;
-  } catch {
-    /* ignore broken storage */
-  }
+  const parsed = readStored(POSITION_KEY) as Position | null;
+  if (typeof parsed?.x === "number" && typeof parsed?.y === "number") return parsed;
   return null;
 }
 
@@ -58,6 +44,7 @@ export function Toolbar(props: Props) {
     onDuplicate,
     onExportPng,
     onExportGeoJson,
+    onSettings,
   } = props;
 
   const rootRef = useRef<HTMLDivElement>(null);
@@ -74,6 +61,7 @@ export function Toolbar(props: Props) {
   }, []);
 
   const startDrag = (event: PointerEvent<HTMLDivElement>) => {
+    if (event.pointerType !== "mouse") return;
     if ((event.target as HTMLElement).closest("button")) return;
     const rect = rootRef.current?.getBoundingClientRect();
     if (!rect) return;
@@ -99,7 +87,7 @@ export function Toolbar(props: Props) {
     if (!dragRef.current) return;
     dragRef.current = null;
     event.currentTarget.releasePointerCapture(event.pointerId);
-    if (position) localStorage.setItem(POSITION_KEY, JSON.stringify(position));
+    if (position) writeStored(POSITION_KEY, position);
   };
 
   return (
@@ -157,6 +145,12 @@ export function Toolbar(props: Props) {
       <button className="tb" onClick={onExportGeoJson} aria-label="Экспорт GeoJSON">
         <Glyph name="download" />
         <span className="tip">Экспорт GeoJSON</span>
+      </button>
+
+      <span className="sep" />
+      <button className="tb" onClick={onSettings} aria-label="Настройки">
+        <Glyph name="settings" />
+        <span className="tip">Настройки</span>
       </button>
     </div>
   );

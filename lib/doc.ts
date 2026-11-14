@@ -1,6 +1,17 @@
-import type { Doc } from "./types";
+import { readStored, writeStored } from "./storage";
+import type { Doc, Layer } from "./types";
 
 const KEY = "xmap.doc.v3";
+
+export function newLayer(index: number): Layer {
+  return {
+    id: crypto.randomUUID(),
+    name: `Слой ${index}`,
+    visible: true,
+    locked: false,
+    opacity: 1,
+  };
+}
 
 export function createBlankDoc(): Doc {
   return {
@@ -8,32 +19,19 @@ export function createBlankDoc(): Doc {
     title: "",
     basemap: "positron",
     camera: { lng: 0, lat: 20, zoom: 2 },
-    layers: [
-      { id: crypto.randomUUID(), name: "Слой 1", visible: true, locked: false, opacity: 1 },
-    ],
+    layers: [newLayer(1)],
     features: [],
   };
 }
 
 export function loadDoc(): Doc {
-  try {
-    const raw = localStorage.getItem(KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw) as Doc;
-      if (parsed?.v === 3 && Array.isArray(parsed.layers) && Array.isArray(parsed.features)) {
-        return parsed;
-      }
-    }
-  } catch {
-    /* ignore broken storage */
+  const parsed = readStored(KEY) as Doc | null;
+  if (parsed?.v === 3 && Array.isArray(parsed.layers) && Array.isArray(parsed.features)) {
+    return parsed;
   }
   return createBlankDoc();
 }
 
 export function saveDoc(doc: Doc) {
-  try {
-    localStorage.setItem(KEY, JSON.stringify(doc));
-  } catch {
-    /* storage full or unavailable */
-  }
+  writeStored(KEY, doc);
 }

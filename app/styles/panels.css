@@ -1,0 +1,120 @@
+/* ---------- panels ---------- */
+
+.panel {
+  position: fixed;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.toolbar {
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 5px;
+  z-index: 30;
+  touch-action: none;
+  user-select: none;
+}
+
+.toolbar .sep {
+  width: 1px;
+  height: 22px;
+  margin: 0 5px;
+  background: var(--border);
+  align-self: center;
+}
+
+.toolbar-grip {
+  display: grid;
+  place-items: center;
+  width: 14px;
+  height: 34px;
+  margin: 0 2px 0 0;
+  color: var(--text-faint);
+  cursor: grab;
+  touch-action: none;
+}
+
+.toolbar-grip:hover {
+  color: var(--text-soft);
+}
+
+.toolbar-grip:active {
+  cursor: grabbing;
+}
+
+.tb {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--text-soft);
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+  position: relative;
+}
+
+.tb:hover {
+  background: var(--hover-strong);
+  color: var(--text);
+}
+
+.tb.active {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.tb:disabled {
+  opacity: 0.32;
+  cursor: default;
+  background: transparent;
+}
+
+.tb .key {
+  position: absolute;
+  right: 3px;
+  bottom: 1px;
+  font-size: 8px;
+  color: var(--key);
+  pointer-events: none;
+}
+
+.tb.active .key {
+  color: var(--accent-ink);
+  opacity: 0.6;
+}
+
+.tip {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  background: var(--tip-bg);
+  padding: 5px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  color: var(--tip-text);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s;
+  z-index: 5;
+}
+
+.toolbar .tb .tip {
+  top: auto;
+  bottom: calc(100% + 10px);
+}
+
+.tb:hover .tip {
+  opacity: 1;
+}
+

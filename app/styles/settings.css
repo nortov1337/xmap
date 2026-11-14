@@ -1,0 +1,330 @@
+/* ---------- settings ---------- */
+
+.settings-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(17, 24, 39, 0.32);
+}
+
+.settings-dialog {
+  position: relative;
+  width: 680px;
+  height: 580px;
+  max-width: 100%;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.settings-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 10px 10px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.settings-head h2 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.settings-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.settings-content {
+  flex: 1;
+  min-width: 0;
+  padding: 18px 16px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.settings-section h3 {
+  margin: 0 0 4px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.settings-hint {
+  margin: 0 0 14px;
+  font-size: 11.5px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.settings-section + .settings-section {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+}
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.settings-toggles {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.toggle-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  background: var(--field-bg);
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.toggle-row:hover {
+  background: var(--hover);
+}
+
+.toggle-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.toggle-label {
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.toggle-desc {
+  font-size: 10.5px;
+  color: var(--muted);
+}
+
+.toggle-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.toggle {
+  position: relative;
+  flex: none;
+  width: 34px;
+  height: 20px;
+  border-radius: 999px;
+  background: var(--border-strong);
+  transition: background 0.15s ease;
+}
+
+.toggle::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--panel);
+  box-shadow: 0 1px 2px rgba(17, 24, 39, 0.25);
+  transition: transform 0.15s ease;
+}
+
+.toggle-input:checked + .toggle {
+  background: var(--accent);
+}
+
+.toggle-input:checked + .toggle::after {
+  transform: translateX(14px);
+  background: #ffffff;
+}
+
+.toggle-input:focus-visible + .toggle {
+  box-shadow: 0 0 0 3px var(--focus);
+}
+
+.choice-card {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 9px;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  background: var(--field-bg);
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.choice-card:hover {
+  background: var(--hover);
+}
+
+.choice-card.on {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--focus);
+}
+
+.choice-preview {
+  display: block;
+  position: relative;
+  height: 52px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  overflow: hidden;
+}
+
+.choice-preview::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+.choice-preview::after {
+  content: "";
+  position: absolute;
+  top: 27px;
+  left: 8px;
+  width: 46%;
+  height: 5px;
+  border-radius: 3px;
+}
+
+.choice-preview.theme-light {
+  background: #eef0f3;
+}
+
+.choice-preview.theme-light::before {
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(17, 24, 39, 0.12);
+}
+
+.choice-preview.theme-light::after {
+  background: #c8ced7;
+}
+
+.choice-preview.theme-dark {
+  background: #14161a;
+}
+
+.choice-preview.theme-dark::before {
+  background: #1c1f25;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.choice-preview.theme-dark::after {
+  background: #3a404b;
+}
+
+.choice-preview.theme-system {
+  background: linear-gradient(90deg, #eef0f3 50%, #14161a 50%);
+}
+
+.choice-preview.theme-system::before {
+  background: linear-gradient(90deg, #ffffff 50%, #1c1f25 50%);
+  box-shadow: 0 1px 2px rgba(17, 24, 39, 0.2);
+}
+
+.choice-preview.theme-system::after {
+  background: linear-gradient(90deg, #c8ced7 50%, #3a404b 50%);
+}
+
+.choice-preview.map-positron {
+  background: linear-gradient(140deg, #f2ecdd 0 46%, #dfe9e2 46% 100%);
+}
+
+.choice-preview.map-positron::before {
+  background: #c9d3d9;
+}
+
+.choice-preview.map-positron::after {
+  background: #b9c9bb;
+}
+
+.choice-preview.map-liberty {
+  background: linear-gradient(140deg, #dcead3 0 46%, #cfe1ef 46% 100%);
+}
+
+.choice-preview.map-liberty::before {
+  background: #f4e6c4;
+}
+
+.choice-preview.map-liberty::after {
+  background: #8fb9d2;
+}
+
+.choice-preview.map-dark {
+  background: #181b21;
+}
+
+.choice-preview.map-dark::before {
+  background: #262b33;
+}
+
+.choice-preview.map-dark::after {
+  background: #39414d;
+}
+
+.choice-preview.map-satellite {
+  background:
+    radial-gradient(circle at 24% 32%, #4c6436 0 26%, transparent 62%),
+    radial-gradient(circle at 78% 68%, #6b5940 0 28%, transparent 64%),
+    linear-gradient(135deg, #3d5330, #2b3d29 56%, #4a4132);
+}
+
+.choice-preview.map-satellite::before {
+  background: rgba(186, 196, 172, 0.22);
+}
+
+.choice-preview.map-satellite::after {
+  background: rgba(126, 108, 78, 0.5);
+}
+
+.choice-preview.map-hybrid {
+  background:
+    radial-gradient(circle at 24% 32%, #4c6436 0 26%, transparent 62%),
+    radial-gradient(circle at 78% 68%, #6b5940 0 28%, transparent 64%),
+    linear-gradient(135deg, #3d5330, #2b3d29 56%, #4a4132);
+}
+
+.choice-preview.map-hybrid::before {
+  background: #f4f6f2;
+}
+
+.choice-preview.map-hybrid::after {
+  background: #ffffff;
+}
+
+.choice-name {
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.choice-desc {
+  font-size: 10.5px;
+  line-height: 1.35;
+  color: var(--muted);
+}

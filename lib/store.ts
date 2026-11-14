@@ -1,33 +1,37 @@
 import { create } from "zustand";
-import { newLayer } from "./config";
-import { createBlankDoc } from "./doc";
-import { translateGeometry } from "./geo";
+import { createBlankDoc, newLayer } from "./doc";
+import { translateGeometry } from "./geo/coords";
 import type { Doc, Layer, MapFeature, Tool } from "./types";
 
-type State = {  doc: Doc;
+const HISTORY_LIMIT = 60;
+const DUPLICATE_OFFSET = { lng: 0.0006, lat: -0.0004 };
+
+type State = {
+  doc: Doc;
   past: Doc[];
   future: Doc[];
   loaded: boolean;
   tool: Tool;
-  selectedId: string | null;
+  selectedIds: string[];
   activeLayerId: string;
   toast: string | null;
 
   hydrate: (doc: Doc) => void;
-  apply: (next: Doc) => void;
-  patchDoc: (patch: Partial<Doc>) => void;  undo: () => void;
+  patchDoc: (patch: Partial<Doc>) => void;
+  undo: () => void;
   redo: () => void;
   setTool: (tool: Tool) => void;
-  setSelected: (id: string | null) => void;
+  setSelection: (ids: string[]) => void;
   setActiveLayer: (id: string) => void;
   showToast: (message: string | null) => void;
-  setLoaded: (loaded: boolean) => void;
 
   addFeature: (feature: MapFeature) => void;
   addFeatures: (features: MapFeature[]) => void;
   updateFeature: (id: string, patch: Partial<MapFeature>) => void;
   removeFeature: (id: string) => void;
+  removeFeatures: (ids: string[]) => void;
   duplicateFeature: (id: string) => void;
+  duplicateFeatures: (ids: string[]) => void;
 
   addLayer: () => void;
   updateLayer: (id: string, patch: Partial<Layer>) => void;
@@ -37,167 +41,180 @@ type State = {  doc: Doc;
   moveFeatureToLayer: (featureId: string, layerId: string) => void;
 };
 
-export const useApp = create<State>((set, get) => ({
-  doc: createBlankDoc(),
-  past: [],
-  future: [],
-  loaded: false,
-  tool: "select",
-  selectedId: null,
-  activeLayerId: "",
-  toast: null,
+function moveById<T extends { id: string }>(items: T[], fromId: string, toId: string): T[] | null {
+  const from = items.findIndex((item) => item.id === fromId);
+  const to = items.findIndex((item) => item.id === toId);
+  if (from < 0 || to < 0 || from === to) return null;
 
-  hydrate: (doc) =>
-    set({
-      doc,
-      past: [],
-      future: [],
-      selectedId: null,
-      activeLayerId: doc.layers[0]?.id ?? "",
-      loaded: true,
-    }),
+  const next = [...items];
+  const [moved] = next.splice(from, 1);
+  next.splice(to, 0, moved);
+  return next;
+}
 
-  apply: (next) => {
+export const useApp = create<State>((set, get) => {
+  const commit = (next: Doc) => {
     const current = get().doc;
     if (JSON.stringify(current) === JSON.stringify(next)) return;
-    set({ doc: next, past: [...get().past, current].slice(-60), future: [] });
-  },
+    set({ doc: next, past: [...get().past, current].slice(-HISTORY_LIMIT), future: [] });
+  };
 
-  patchDoc: (patch) => set({ doc: { ...get().doc, ...patch } }),
+  return {
+    doc: createBlankDoc(),
+    past: [],
+    future: [],
+    loaded: false,
+    tool: "select",
+    selectedIds: [],
+    activeLayerId: "",
+    toast: null,
 
-  undo: () => {
-    const { past, future, doc } = get();
-    if (!past.length) return;
-    set({
-      doc: past[past.length - 1],
-      past: past.slice(0, -1),
-      future: [doc, ...future].slice(0, 60),
-      selectedId: null,
-    });
-  },
+    hydrate: (doc) =>
+      set({
+        doc,
+        past: [],
+        future: [],
+        selectedIds: [],
+        activeLayerId: doc.layers[0]?.id ?? "",
+        loaded: true,
+      }),
 
-  redo: () => {
-    const { past, future, doc } = get();
-    if (!future.length) return;
-    set({
-      doc: future[0],
-      past: [...past, doc].slice(-60),
-      future: future.slice(1),
-      selectedId: null,
-    });
-  },
+    patchDoc: (patch) => set({ doc: { ...get().doc, ...patch } }),
 
-  setTool: (tool) => set({ tool }),
-  setSelected: (selectedId) => set({ selectedId }),
-  setActiveLayer: (activeLayerId) => set({ activeLayerId }),
-  showToast: (toast) => set({ toast }),
-  setLoaded: (loaded) => set({ loaded }),
+    undo: () => {
+      const { past, future, doc } = get();
+      if (!past.length) return;
+      set({
+        doc: past[past.length - 1],
+        past: past.slice(0, -1),
+        future: [doc, ...future].slice(0, HISTORY_LIMIT),
+        selectedIds: [],
+      });
+    },
 
-  addFeature: (feature) => {
-    const doc = get().doc;
-    get().apply({ ...doc, features: [...doc.features, feature] });
-  },
+    redo: () => {
+      const { past, future, doc } = get();
+      if (!future.length) return;
+      set({
+        doc: future[0],
+        past: [...past, doc].slice(-HISTORY_LIMIT),
+        future: future.slice(1),
+        selectedIds: [],
+      });
+    },
 
-  addFeatures: (features) => {
-    if (!features.length) return;
-    const doc = get().doc;
-    get().apply({ ...doc, features: [...doc.features, ...features] });
-  },
+    setTool: (tool) => set({ tool }),
+    setSelection: (selectedIds) => set({ selectedIds }),
+    setActiveLayer: (activeLayerId) => set({ activeLayerId }),
+    showToast: (toast) => set({ toast }),
 
-  updateFeature: (id, patch) => {
-    const doc = get().doc;
-    get().apply({
-      ...doc,
-      features: doc.features.map((feature) =>
-        feature.id === id ? { ...feature, ...patch } : feature,
-      ),
-    });
-  },
+    addFeature: (feature) => {
+      const doc = get().doc;
+      commit({ ...doc, features: [...doc.features, feature] });
+    },
 
-  removeFeature: (id) => {
-    const doc = get().doc;
-    get().apply({ ...doc, features: doc.features.filter((feature) => feature.id !== id) });
-    if (get().selectedId === id) set({ selectedId: null });
-  },
+    addFeatures: (features) => {
+      if (!features.length) return;
+      const doc = get().doc;
+      commit({ ...doc, features: [...doc.features, ...features] });
+    },
 
-  duplicateFeature: (id) => {
-    const doc = get().doc;
-    const source = doc.features.find((feature) => feature.id === id);
-    if (!source) return;
-    const copy: MapFeature = {
-      ...source,
-      id: crypto.randomUUID(),
-      geom: translateGeometry(source.geom, 0.0006, -0.0004),
-      style: { ...source.style },
-    };
-    get().apply({ ...doc, features: [...doc.features, copy] });
-    set({ selectedId: copy.id });
-  },
+    updateFeature: (id, patch) => {
+      const doc = get().doc;
+      commit({
+        ...doc,
+        features: doc.features.map((feature) =>
+          feature.id === id ? { ...feature, ...patch } : feature,
+        ),
+      });
+    },
 
-  addLayer: () => {
-    const doc = get().doc;
-    const layer = newLayer(doc.layers.length + 1);
-    get().apply({ ...doc, layers: [...doc.layers, layer] });
-    set({ activeLayerId: layer.id, selectedId: null });
-  },
+    removeFeature: (id) => get().removeFeatures([id]),
 
-  updateLayer: (id, patch) => {
-    const doc = get().doc;
-    get().apply({
-      ...doc,
-      layers: doc.layers.map((layer) => (layer.id === id ? { ...layer, ...patch } : layer)),
-    });
-  },
+    removeFeatures: (ids) => {
+      if (!ids.length) return;
+      const doc = get().doc;
+      const removed = new Set(ids);
+      commit({
+        ...doc,
+        features: doc.features.filter((feature) => !removed.has(feature.id)),
+      });
+      set({ selectedIds: get().selectedIds.filter((id) => !removed.has(id)) });
+    },
 
-  removeLayer: (id) => {
-    const doc = get().doc;
-    if (doc.layers.length <= 1) return;
-    const layers = doc.layers.filter((layer) => layer.id !== id);
-    get().apply({
-      ...doc,
-      layers,
-      features: doc.features.filter((feature) => feature.layerId !== id),
-    });
-    if (get().activeLayerId === id) set({ activeLayerId: layers[0].id });
-    set({ selectedId: null });
-  },
+    duplicateFeature: (id) => get().duplicateFeatures([id]),
 
-  moveFeatureToLayer: (featureId, layerId) => {
-    const doc = get().doc;
-    const feature = doc.features.find((item) => item.id === featureId);
-    if (!feature || feature.layerId === layerId) return;
+    duplicateFeatures: (ids) => {
+      const doc = get().doc;
+      const sources = doc.features.filter((feature) => ids.includes(feature.id));
+      if (!sources.length) return;
+      const copies: MapFeature[] = sources.map((source, index) => ({
+        ...source,
+        id: crypto.randomUUID(),
+        geom: translateGeometry(
+          source.geom,
+          DUPLICATE_OFFSET.lng * (index + 1),
+          DUPLICATE_OFFSET.lat * (index + 1),
+        ),
+        style: { ...source.style },
+      }));
+      commit({ ...doc, features: [...doc.features, ...copies] });
+      set({ selectedIds: copies.map((copy) => copy.id) });
+    },
 
-    const rest = doc.features.filter((item) => item.id !== featureId);
-    const lastInLayer = rest.map((item) => item.layerId).lastIndexOf(layerId);
-    const features = [...rest];
-    const insertAt = lastInLayer < 0 ? features.length : lastInLayer + 1;
-    features.splice(insertAt, 0, { ...feature, layerId });
+    addLayer: () => {
+      const doc = get().doc;
+      const layer = newLayer(doc.layers.length + 1);
+      commit({ ...doc, layers: [...doc.layers, layer] });
+      set({ activeLayerId: layer.id, selectedIds: [] });
+    },
 
-    get().apply({ ...doc, features });
-    set({ activeLayerId: layerId, selectedId: featureId });
-  },
+    updateLayer: (id, patch) => {
+      const doc = get().doc;
+      commit({
+        ...doc,
+        layers: doc.layers.map((layer) => (layer.id === id ? { ...layer, ...patch } : layer)),
+      });
+    },
 
-  reorderLayers: (fromId, toId) => {
-    const doc = get().doc;
-    const from = doc.layers.findIndex((layer) => layer.id === fromId);
-    const to = doc.layers.findIndex((layer) => layer.id === toId);
-    if (from < 0 || to < 0 || from === to) return;
+    removeLayer: (id) => {
+      const doc = get().doc;
+      if (doc.layers.length <= 1) return;
+      const layers = doc.layers.filter((layer) => layer.id !== id);
+      commit({
+        ...doc,
+        layers,
+        features: doc.features.filter((feature) => feature.layerId !== id),
+      });
+      if (get().activeLayerId === id) set({ activeLayerId: layers[0].id });
+      set({ selectedIds: [] });
+    },
 
-    const layers = [...doc.layers];
-    const [moved] = layers.splice(from, 1);
-    layers.splice(to, 0, moved);
-    get().apply({ ...doc, layers });
-  },
+    moveFeatureToLayer: (featureId, layerId) => {
+      const doc = get().doc;
+      const feature = doc.features.find((item) => item.id === featureId);
+      if (!feature || feature.layerId === layerId) return;
 
-  reorderFeatures: (fromId, toId) => {
-    const doc = get().doc;
-    const from = doc.features.findIndex((feature) => feature.id === fromId);
-    const to = doc.features.findIndex((feature) => feature.id === toId);
-    if (from < 0 || to < 0 || from === to) return;
+      const rest = doc.features.filter((item) => item.id !== featureId);
+      const lastInLayer = rest.map((item) => item.layerId).lastIndexOf(layerId);
+      const features = [...rest];
+      const insertAt = lastInLayer < 0 ? features.length : lastInLayer + 1;
+      features.splice(insertAt, 0, { ...feature, layerId });
 
-    const features = [...doc.features];
-    const [moved] = features.splice(from, 1);
-    features.splice(to, 0, moved);
-    get().apply({ ...doc, features });
-  },
-}));
+      commit({ ...doc, features });
+      set({ activeLayerId: layerId, selectedIds: [featureId] });
+    },
+
+    reorderLayers: (fromId, toId) => {
+      const doc = get().doc;
+      const layers = moveById(doc.layers, fromId, toId);
+      if (layers) commit({ ...doc, layers });
+    },
+
+    reorderFeatures: (fromId, toId) => {
+      const doc = get().doc;
+      const features = moveById(doc.features, fromId, toId);
+      if (features) commit({ ...doc, features });
+    },
+  };
+});
